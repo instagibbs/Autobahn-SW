@@ -1,7 +1,7 @@
 Autobahn-SW
 ===============
 This repo contains an AutobahnAndroid with SecuredWebSockets implementation.
-It allows to perform RPC and Push-Subscribe Wamp requests over a secured connection (wss protocol)
+It allows to perform RPC and Publish-Subscribe Wamp requests over a secured connection (wss protocol)
 
 It is based on:
 
@@ -11,7 +11,7 @@ https://github.com/tavendo/AutobahnAndroid
 and SecuredWebSockets:
 https://github.com/palmerc/SecureWebSockets
 
-As far as we know, the library works in production for both topologies (RPC and Push-Subscribe).
+As far as we know, the library works in production for both topologies (RPC and Publish-Subscribe).
 
 This repo needs some cleaning, as somes classes are available twice:
 ByteBufferInputStream.java
