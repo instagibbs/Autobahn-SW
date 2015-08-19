@@ -16,7 +16,8 @@ public interface WebSocket {
 			PROTOCOL_ERROR,
 			INTERNAL_ERROR,
 			SERVER_ERROR,
-			RECONNECT
+			RECONNECT,
+                        SSL_HANDSHAKE_ERROR
 		}
 
 		/**

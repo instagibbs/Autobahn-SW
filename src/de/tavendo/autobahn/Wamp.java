@@ -22,6 +22,7 @@ package de.tavendo.autobahn;
 import org.codehaus.jackson.type.TypeReference;
 
 import de.tavendo.autobahn.secure.WebSocket.WebSocketConnectionObserver.WebSocketCloseNotification;
+import de.tavendo.autobahn.secure.WebSocketMessage;
 
 /**
  * WAMP interface.
@@ -46,6 +47,8 @@ public interface Wamp {
        * @param reason     A humand readable description of the reason of connection close.
        */
       public void onClose(WebSocketCloseNotification code, String reason);
+
+      public void onCloseMessage(WebSocketMessage.Close close);
    }
 
    /**

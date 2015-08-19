@@ -60,8 +60,6 @@ public class WebSocketWriter extends Thread {
 	/**
 	 * Create new WebSockets background writer.
 	 *
-	 * @param looper    The message looper of the background thread on which
-	 *                  this object is running.
 	 * @param master    The message handler of master (foreground thread).
 	 * @param socket    The socket channel created on foreground thread.
 	 * @param options   WebSockets connection options.
@@ -410,7 +408,14 @@ public class WebSocketWriter extends Thread {
 		OutputStream outputStream = null;
 		try {
 			outputStream = mSocket.getOutputStream();
-		} catch (IOException e) {
+		} catch (java.net.SocketException e) {
+			Log.e(TAG, e.getLocalizedMessage());
+                        if ("Socket is closed".equals(e.getMessage().toString())) {
+                            Log.e(TAG, "Terminating WebSockerWriter Thread");
+                            return;
+                        }
+		}
+		catch (IOException e) {
 			Log.e(TAG, e.getLocalizedMessage());
 		}
 		

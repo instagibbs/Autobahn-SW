@@ -23,6 +23,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.codehaus.jackson.type.TypeReference;
+import javax.net.SocketFactory;
 
 import android.util.Log;
 import de.tavendo.autobahn.secure.WebSocketConnection;
@@ -43,7 +44,13 @@ public class WampConnection extends WebSocketConnection implements Wamp {
 
    /// RNG for IDs.
    private final Random mRng = new Random();
-   
+   public WampConnection() {
+      super(null);
+   }
+   public WampConnection(final SocketFactory sf) {
+      super(sf);
+   }
+
 
    /// Set of chars to be used for IDs.
    private static final char[] mBase64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
@@ -337,7 +344,7 @@ public class WampConnection extends WebSocketConnection implements Wamp {
 
    /**
     * Issue a remote procedure call (RPC). This version should be used with
-    * result types which are containers, i.e. List<> or Map<>.
+    * {@literal result types which are containers, i.e. List<> or Map<>. }
     *
     * @param procUri          URI or CURIE of procedure to call.
     * @param resultType       Type we want the call result to be converted to.
@@ -371,7 +378,7 @@ public class WampConnection extends WebSocketConnection implements Wamp {
 
    /**
     * Subscribe to topic to receive events for. This version should be used with
-    * result types which are containers, i.e. List<> or Map<>.
+    * {@literal result types which are containers, i.e. List<> or Map<>. }
     *
     * @param topicUri         URI or CURIE of topic to subscribe to.
     * @param eventType        The type we want events to be converted to.

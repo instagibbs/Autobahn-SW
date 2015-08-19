@@ -619,6 +619,10 @@ public class WebSocketReader extends Thread {
 		InputStream inputStream = null;
 		try {
 			inputStream = mSocket.getInputStream();
+		} catch (javax.net.ssl.SSLHandshakeException e) {
+			Log.e(TAG, e.getLocalizedMessage());
+                        notify(new WebSocketMessage.SSLHandshakeError(e));
+                        return;
 		} catch (IOException e) {
 			Log.e(TAG, e.getLocalizedMessage());
 			return;

@@ -11,6 +11,7 @@ import de.tavendo.autobahn.Wamp.ConnectionHandler;
 import de.tavendo.autobahn.WampConnection;
 import de.tavendo.autobahn.WampOptions;
 import de.tavendo.autobahn.secure.WebSocket.WebSocketConnectionObserver.WebSocketCloseNotification;
+import de.tavendo.autobahn.secure.WebSocketMessage;
 
 public final class ApiServiceHelper<T> {
 
@@ -84,6 +85,10 @@ public final class ApiServiceHelper<T> {
                      methodCallLatch.countDown();
 
                   }
+
+                  public void onCloseMessage(WebSocketMessage.Close close){
+
+                  }
                }, wampOptions);
       }
       if (waitRemote(methodCallLatch)) {
@@ -141,8 +146,12 @@ public final class ApiServiceHelper<T> {
                   public void onClose(WebSocketCloseNotification notif,
                         String reason) {
                      Log.d(ApiServiceHelper.class.getSimpleName(), SystemHelper
-                           .buildStringNoSep(notif, SystemHelper.SPACE, reason));
+                             .buildStringNoSep(notif, SystemHelper.SPACE, reason));
 
+                  }
+
+                  public void onCloseMessage(WebSocketMessage.Close close){
+                     
                   }
                }, wampOptions);
       }

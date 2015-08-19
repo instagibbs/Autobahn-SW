@@ -22,9 +22,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.Socket;
 import java.net.URI;
-
 import javax.net.SocketFactory;
-
 import android.net.SSLCertificateSocketFactory;
 import android.os.Handler;
 import android.os.Looper;
@@ -55,13 +53,15 @@ public class WebSocketConnection implements WebSocket {
 
 	protected WebSocketOptions mWebSocketOptions;
 	private boolean mPreviousConnection = false;
+        private final SocketFactory sf;
 
 
 
-	public WebSocketConnection() {
+	public WebSocketConnection(final SocketFactory sf) {
 		Log.d(TAG, "WebSocket connection created.");
 
 		this.mHandler = new ThreadHandler(this);
+                this.sf = sf;
 	}
 
 
@@ -196,7 +196,7 @@ public class WebSocketConnection implements WebSocket {
 	}
 
 	private void connect() {
-		mSocketThread = new SocketThread(mWebSocketURI, mWebSocketOptions);
+		mSocketThread = new SocketThread(mWebSocketURI, mWebSocketOptions, sf);
 
 		mSocketThread.start();
 		synchronized (mSocketThread) {
@@ -406,6 +406,9 @@ public class WebSocketConnection implements WebSocket {
 			//			WebSocketMessage.ConnectionLost connectionLost = (WebSocketMessage.ConnectionLost) message.obj;
 			failConnection(WebSocketCloseNotification.CONNECTION_LOST, "WebSockets connection lost");
 
+		} else if (message.obj instanceof WebSocketMessage.SSLHandshakeError) {
+			failConnection(WebSocketCloseNotification.SSL_HANDSHAKE_ERROR, "WebSockets failed SSL handshake");
+
 		} else if (message.obj instanceof WebSocketMessage.ProtocolViolation) {
 			//			WebSocketMessage.ProtocolViolation protocolViolation = (WebSocketMessage.ProtocolViolation) message.obj;
 			failConnection(WebSocketCloseNotification.PROTOCOL_ERROR, "WebSockets protocol violation");
@@ -435,12 +438,12 @@ public class WebSocketConnection implements WebSocket {
 		private String mFailureMessage = null;
 		
 		private Handler mHandler;
+                private SocketFactory sf;
 		
 
-
-		public SocketThread(URI uri, WebSocketOptions options) {
+		public SocketThread(URI uri, WebSocketOptions options, final SocketFactory sf) {
 			this.setName(WS_CONNECTOR);
-			
+                        this.sf = sf;
 			this.mWebSocketURI = uri;
 		}
 
@@ -474,10 +477,13 @@ public class WebSocketConnection implements WebSocket {
 				}
 				
 				SocketFactory factory = null;
-				if (mWebSocketURI.getScheme().equalsIgnoreCase(WSS_URI_SCHEME)) {
+                                if (this.sf != null) {
+                                    factory = sf;
+                                }
+                                else if (mWebSocketURI.getScheme().equalsIgnoreCase(WSS_URI_SCHEME)) {
 					factory = SSLCertificateSocketFactory.getDefault();
 				} else {
-					factory = SocketFactory.getDefault();
+					factory = javax.net.SocketFactory.getDefault();
 				}
 
 				// Do not replace host string with InetAddress or you lose automatic host name verification

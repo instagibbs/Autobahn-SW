@@ -128,6 +128,15 @@ public class WebSocketMessage {
 		}
 	}
 
+	public static class SSLHandshakeError extends Message {
+
+		public Exception mException;
+
+		public SSLHandshakeError(Exception e) {
+			mException = e;
+		}
+	}
+
 	/// WebSockets text message to send or received.
 	public static class TextMessage extends Message {
 
